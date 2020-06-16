@@ -1,5 +1,4 @@
 import React from "react";
-import { red } from "color-name";
 
 function getCellColor(yIndex, xIndex, snake) {
     const snakeCheck = snake.body.some(item => {
