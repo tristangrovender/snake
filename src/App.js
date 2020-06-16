@@ -19,7 +19,7 @@ function moveSnake({ direction, body }) {
   return [...body.slice(1), newHead];
 }
 
-function App() {
+function App({ store }) {
   const [gameState, setGameState] = useState({
     rowCount: 17,
     columnCount: 17,
@@ -34,6 +34,8 @@ function App() {
     },
     frameRateInMs: 1000,
   });
+
+  console.log("store", store);
 
   setTimeout(function () {
     setGameState({
