@@ -4,75 +4,37 @@ import Grid from "./Grid";
 import "./App.css";
 import { connect } from "react-redux";
 import { useSelector } from "react-redux";
+import { dispatch, getState } from "./store";
+import { executeGameFrame, setSnakeDirection } from "./game-reducer";
 
-function moveSnake({ direction, body }) {
-  // In functional programming we NEVER mutate - only copy and create. Commented out solution below mutates.
-  const currentHead = body[body.length - 1];
-  let newHead;
-  if (direction === "down") {
-    newHead = { ...currentHead, y: currentHead.y + 1 };
-  } else if (direction === "up") {
-    newHead = { ...currentHead, y: currentHead.y - 1 };
-  } else if (direction === "right") {
-    newHead = { ...currentHead, x: currentHead.x + 1 };
-  } else if (direction === "left") {
-    newHead = { ...currentHead, x: currentHead.x - 1 };
+setInterval(() => {
+  dispatch(executeGameFrame());
+}, 1000);
+
+const directionHandler = ({ key }) => {
+  const { gameState } = getState();
+  if (key === "ArrowUp") {
+    if (gameState.snake.direction !== "down") {
+      dispatch(setSnakeDirection("up"));
+    }
+  } else if (key === "ArrowDown") {
+    if (gameState.snake.direction !== "up") {
+      dispatch(setSnakeDirection("down"));
+    }
+  } else if (key === "ArrowRight") {
+    if (gameState.snake.direction !== "left") {
+      dispatch(setSnakeDirection("right"));
+    }
+  } else if (key === "ArrowLeft") {
+    if (gameState.snake.direction !== "right") {
+      dispatch(setSnakeDirection("left"));
+    }
   }
-  return [...body.slice(1), newHead];
-}
+};
+window.addEventListener("keyup", directionHandler);
 
 function App() {
   const gameState = useSelector((state) => state.gameState);
-
-  console.log("gameState", gameState);
-
-  //   setTimeout(function () {
-  //     setGameState({
-  //       ...gameState,
-  //       snake: {
-  //         ...gameState.snake,
-  //         body: moveSnake(gameState.snake),
-  //       },
-  //       refreshScreen: true,
-  //     });
-  //   }, 1000);
-
-  const setDirection = (direction) => {
-    console.log("set direction", direction);
-    // setGameState({
-    //   ...gameState,
-    //   snake: {
-    //     ...gameState.snake,
-    //     direction,
-    //   },
-    // });
-  };
-
-  // TODO is update gameState.snake.direction with the correct direction in the below handler
-  const directionHandler = ({ key }) => {
-    if (key === "ArrowUp") {
-      if (gameState.snake.direction !== "down") {
-        setDirection("up");
-      }
-    } else if (key === "ArrowDown") {
-      if (gameState.snake.direction !== "up") {
-        setDirection("down");
-      }
-    } else if (key === "ArrowRight") {
-      if (gameState.snake.direction !== "left") {
-        setDirection("right");
-      }
-    } else if (key === "ArrowLeft") {
-      if (gameState.snake.direction !== "right") {
-        setDirection("left");
-      }
-    }
-  };
-
-  // Solution
-  window.removeEventListener("keyup", directionHandler);
-  window.addEventListener("keyup", directionHandler);
-
   return (
     <div className="App">
       <Grid
