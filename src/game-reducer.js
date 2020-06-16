@@ -44,7 +44,6 @@ function moveSnake({ direction, body }) {
 }
 
 export function gameStateReducer(state = defaultState, action) {
-  console.log("reducer was called!");
   switch (action.type) {
     case "GAME_FRAME": {
       return {
