@@ -4,58 +4,85 @@ import Grid from "./Grid";
 import "./App.css";
 
 function moveSnake({ direction, body }) {
-    // TODO: return a new body that has moved by one square
-
     // In functional programming we NEVER mutate - only copy and create. Commented out solution below mutates.
-    const head = body[body.length - 1];
-    return [...body.slice(1), { ...head, y: head.y + 1 }];
+    const currentHead = body[body.length - 1];
+    let newHead;
+    if (direction === "down") {
+        newHead = { ...currentHead, y: currentHead.y + 1 };
+    } else if (direction === "up") {
+        newHead = { ...currentHead, y: currentHead.y - 1 };
+    } else if (direction === "right") {
+        newHead = { ...currentHead, x: currentHead.x + 1 };
+    } else if (direction === "left") {
+        newHead = { ...currentHead, x: currentHead.x - 1 };
+    }
+    return [...body.slice(1), newHead];
 }
 
-let timeout;
 function App() {
     const [gameState, setGameState] = useState({
         rowCount: 17,
         columnCount: 17,
         targetCircle: { x: 3, y: 15 },
         snake: {
-            direction: "down",
-            body: [{ x: 0, y: 0 }, { x: 0, y: 1 }, { x: 0, y: 2 }]
+            direction: "right",
+            body: [{ x: 10, y: 10 }, { x: 10, y: 11 }, { x: 10, y: 12 }]
         },
-        frameRateInMs: 1000
+        frameRateInMs: 1000,
+        refreshScreen: true
     });
 
-    clearTimeout(timeout);
-    // debugger;
-    timeout = setTimeout(function() {
+    if (gameState.refreshScreen) {
+        setTimeout(function() {
+            setGameState({
+                ...gameState,
+                snake: {
+                    ...gameState.snake,
+                    body: moveSnake(gameState.snake)
+                },
+                refreshScreen: true
+            });
+        }, 1000);
+        setGameState({
+            ...gameState,
+            refreshScreen: false
+        });
+    }
+
+    const setDirection = direction => {
         setGameState({
             ...gameState,
             snake: {
                 ...gameState.snake,
-                body: moveSnake(gameState.snake)
+                direction
             }
         });
-    }, 1000);
+    };
 
-    const upHandler = ({ key }) => {
+    // TODO is update gameState.snake.direction with the correct direction in the below handler
+    const directionHandler = ({ key }) => {
         if (key === "ArrowUp") {
-            console.log("up!");
+            if (gameState.snake.direction !== "down") {
+                setDirection("up");
+            }
         } else if (key === "ArrowDown") {
-            console.log("down!");
+            if (gameState.snake.direction !== "up") {
+                setDirection("down");
+            }
         } else if (key === "ArrowRight") {
-            console.log("right!");
+            if (gameState.snake.direction !== "left") {
+                setDirection("right");
+            }
         } else if (key === "ArrowLeft") {
-            console.log("left!");
+            if (gameState.snake.direction !== "right") {
+                setDirection("left");
+            }
         }
     };
 
-    // Add event listeners
-    useEffect(() => {
-        window.addEventListener("keyup", upHandler);
-        // Remove event listeners on cleanup
-        return () => {
-            window.removeEventListener("keyup", upHandler);
-        };
-    }, []); // Empty array ensures that effect is only run on mount and unmount
+    // Solution
+    window.removeEventListener("keyup", directionHandler);
+    window.addEventListener("keyup", directionHandler);
 
     return (
         <div className="App">

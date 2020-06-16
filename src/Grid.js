@@ -39,7 +39,6 @@ function TargetCircle() {
 }
 
 export default function Grid({ rowCount, columnCount, snake, targetCircle }) {
-    console.log(snake);
     return (
         <div className="game-box">
             {Array.from(new Array(rowCount)).map((item, yIndex) => {
