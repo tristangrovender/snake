@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 
 import Grid from "./Grid";
 import "./App.css";
+import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 
 function moveSnake({ direction, body }) {
   // In functional programming we NEVER mutate - only copy and create. Commented out solution below mutates.
@@ -19,43 +21,31 @@ function moveSnake({ direction, body }) {
   return [...body.slice(1), newHead];
 }
 
-function App({ store }) {
-  const [gameState, setGameState] = useState({
-    rowCount: 17,
-    columnCount: 17,
-    targetCircle: { x: 3, y: 15 },
-    snake: {
-      direction: "right",
-      body: [
-        { x: 10, y: 10 },
-        { x: 10, y: 11 },
-        { x: 10, y: 12 },
-      ],
-    },
-    frameRateInMs: 1000,
-  });
+function App() {
+  const gameState = useSelector((state) => state.gameState);
 
-  console.log("store", store);
+  console.log("gameState", gameState);
 
-  setTimeout(function () {
-    setGameState({
-      ...gameState,
-      snake: {
-        ...gameState.snake,
-        body: moveSnake(gameState.snake),
-      },
-      refreshScreen: true,
-    });
-  }, 1000);
+  //   setTimeout(function () {
+  //     setGameState({
+  //       ...gameState,
+  //       snake: {
+  //         ...gameState.snake,
+  //         body: moveSnake(gameState.snake),
+  //       },
+  //       refreshScreen: true,
+  //     });
+  //   }, 1000);
 
   const setDirection = (direction) => {
-    setGameState({
-      ...gameState,
-      snake: {
-        ...gameState.snake,
-        direction,
-      },
-    });
+    console.log("set direction", direction);
+    // setGameState({
+    //   ...gameState,
+    //   snake: {
+    //     ...gameState.snake,
+    //     direction,
+    //   },
+    // });
   };
 
   // TODO is update gameState.snake.direction with the correct direction in the below handler
@@ -95,4 +85,4 @@ function App({ store }) {
   );
 }
 
-export default App;
+export default connect()(App);

@@ -4,17 +4,30 @@ import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 
-import { createStore } from "redux";
+import { createStore, combineReducers } from "redux";
 import { Provider } from "react-redux";
 
-const defaultState = {};
+const defaultState = {
+  rowCount: 17,
+  columnCount: 17,
+  targetCircle: { x: 3, y: 15 },
+  snake: {
+    direction: "right",
+    body: [
+      { x: 10, y: 10 },
+      { x: 10, y: 11 },
+      { x: 10, y: 12 },
+    ],
+  },
+  frameRateInMs: 1000,
+};
 
 function gameStateReducer(state = defaultState, action) {
   console.log("reducer was called!");
   return state;
 }
 
-const store = createStore(gameStateReducer);
+const store = createStore(combineReducers({ gameState: gameStateReducer }));
 
 ReactDOM.render(
   <Provider store={store}>
