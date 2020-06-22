@@ -47,22 +47,19 @@ function getRandomTargetCirclePosition(gameState) {
         return !cellIsInSnakeBody;
     };
     const gridWithoutSnakeBody = grid.filter(isCellNotInSnakeBody);
-
-    // [ ] 3. Pick a random item in the array as the coordinate for the target circle
-
-    console.log("newGrid", gridWithoutSnakeBody);
-
-    // TODO pick a random number in the range shown below
     const randomIndex = Math.floor(Math.random() * gridWithoutSnakeBody.length);
     return gridWithoutSnakeBody[randomIndex];
 }
 
-function updateGameFrame(gameState) {
+function getHead(gameState) {
+    return gameState.snake.body[gameState.snake.body.length - 1];
+}
+
+function moveSnake(gameState) {
     const {
         snake: { direction, body }
     } = gameState;
-    // In functional programming we NEVER mutate - only copy and create. Commented out solution below mutates.
-    const currentHead = body[body.length - 1];
+    const currentHead = getHead(gameState);
     let newHead;
     if (direction === "down") {
         newHead = { ...currentHead, y: currentHead.y + 1 };
@@ -73,17 +70,45 @@ function updateGameFrame(gameState) {
     } else if (direction === "left") {
         newHead = { ...currentHead, x: currentHead.x - 1 };
     }
-    const newGameState = {
+    return {
         ...gameState,
         snake: {
             ...gameState.snake,
             body: [...body.slice(1), newHead]
         }
     };
+}
+
+function growSnakeBody(lastFrameGameState, currentFrameGameState) {
+    // TODO return currentFrameGameState.snake.body with an appended tail from lastFrameGameState
+    return [
+        lastFrameGameState.snake.body[0],
+        ...currentFrameGameState.snake.body
+    ];
+}
+
+function updateGameFrame(gameState) {
+    const newGameState = moveSnake(gameState);
+
+    const head = getHead(gameState);
+    if (
+        head.x === newGameState.targetCircle.x &&
+        head.y === newGameState.targetCircle.y
+    ) {
+        console.log("Snake is on the target");
+        return {
+            ...newGameState,
+            snake: {
+                ...newGameState.snake,
+                body: growSnakeBody(gameState, newGameState)
+            },
+            targetCircle: getRandomTargetCirclePosition(newGameState)
+        };
+    }
 
     return {
-        ...newGameState,
-        targetCircle: getRandomTargetCirclePosition(newGameState)
+        ...newGameState
+        // targetCircle: getRandomTargetCirclePosition(newGameState)
     };
 }
 
