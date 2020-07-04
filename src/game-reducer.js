@@ -7,7 +7,6 @@ const defaultState = {
         body: [{ x: 10, y: 10 }, { x: 10, y: 11 }, { x: 10, y: 12 }]
     },
     frameRateInMs: 1000,
-    // update the state
     isGameRunning: false
 };
 
@@ -65,7 +64,7 @@ function getHead(gameState) {
     return gameState.snake.body[gameState.snake.body.length - 1];
 }
 
-function moveSnake(gameState) {
+function moveSnakeHead(gameState) {
     const {
         snake: { direction, body }
     } = gameState;
@@ -90,20 +89,54 @@ function moveSnake(gameState) {
 }
 
 function growSnakeBody(lastFrameGameState, currentFrameGameState) {
-    // TODO return currentFrameGameState.snake.body with an appended tail from lastFrameGameState
     return [
         lastFrameGameState.snake.body[0],
         ...currentFrameGameState.snake.body
     ];
 }
 
-function updateGameFrame(gameState) {
-    const newGameState = moveSnake(gameState);
+function hasSnakeCrossedOverItself(snakeBody) {
+    console.log(snakeBody);
+    const head = snakeBody[0];
+    // see if the snake head matches any of the other coordinates in the body
+    const snakeBodyWithoutHead = snakeBody.slice(1);
+    const snakeCheck = snakeBodyWithoutHead.some(coordinates => {
+        return head.x === coordinates.x && coordinates.y === head.y;
+    });
+    return snakeCheck;
+}
 
+function isGameOver(gameState) {
     const head = getHead(gameState);
     if (
-        head.x === newGameState.targetCircle.x &&
-        head.y === newGameState.targetCircle.y
+        head.x > gameState.columnCount - 1 ||
+        head.y > gameState.rowCount - 1 ||
+        head.x < 0 ||
+        head.y < 0
+    ) {
+        return true;
+    }
+
+    if (hasSnakeCrossedOverItself(gameState.snake.body)) {
+        return true;
+    }
+
+    return false;
+}
+
+function updateGameFrame(gameState) {
+    const newGameState = moveSnakeHead(gameState);
+    if (isGameOver(newGameState)) {
+        return {
+            ...defaultState,
+            isGameRunning: false
+        };
+    }
+
+    const oldHead = getHead(gameState);
+    if (
+        oldHead.x === newGameState.targetCircle.x &&
+        oldHead.y === newGameState.targetCircle.y
     ) {
         console.log("Snake is on the target");
         return {
@@ -115,7 +148,6 @@ function updateGameFrame(gameState) {
             targetCircle: getRandomTargetCirclePosition(newGameState)
         };
     }
-
     return {
         ...newGameState
         // targetCircle: getRandomTargetCirclePosition(newGameState)
