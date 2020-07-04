@@ -1,11 +1,16 @@
 .App {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     width: 100vw;
     height: 100vh;
     text-align: center;
     background-color: #263445;
+}
+
+.App .title {
+    color: white;
 }
 
 .game-box {

@@ -6,8 +6,18 @@ const defaultState = {
         direction: "right",
         body: [{ x: 10, y: 10 }, { x: 10, y: 11 }, { x: 10, y: 12 }]
     },
-    frameRateInMs: 1000
+    frameRateInMs: 1000,
+    // update the state
+    isGameRunning: false
 };
+
+export function startGame() {
+    console.log("space bar was pressed!");
+    return {
+        type: "START_GAME",
+        payload: {}
+    };
+}
 
 export function executeGameFrame() {
     return {
@@ -124,6 +134,12 @@ export function gameStateReducer(state = defaultState, action) {
                     ...state.snake,
                     direction: action.payload.direction
                 }
+            };
+        }
+        case "START_GAME": {
+            return {
+                ...state,
+                isGameRunning: true
             };
         }
         default: {

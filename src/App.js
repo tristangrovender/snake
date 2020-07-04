@@ -5,14 +5,18 @@ import "./App.css";
 import { connect } from "react-redux";
 import { useSelector } from "react-redux";
 import { dispatch, getState } from "./store";
-import { executeGameFrame, setSnakeDirection } from "./game-reducer";
+import { executeGameFrame, setSnakeDirection, startGame } from "./game-reducer";
 
 setInterval(() => {
-    dispatch(executeGameFrame());
+    const { gameState } = getState();
+    if (gameState.isGameRunning === true) {
+        dispatch(executeGameFrame());
+    }
 }, 500);
 
-const directionHandler = ({ key }) => {
+const keyUpHandler = ({ key }) => {
     const { gameState } = getState();
+
     if (key === "ArrowUp") {
         if (gameState.snake.direction !== "down") {
             dispatch(setSnakeDirection("up"));
@@ -29,14 +33,21 @@ const directionHandler = ({ key }) => {
         if (gameState.snake.direction !== "right") {
             dispatch(setSnakeDirection("left"));
         }
+    } else if (key === " ") {
+        if (gameState.isGameRunning === false) {
+            dispatch(startGame());
+        }
     }
 };
-window.addEventListener("keyup", directionHandler);
+window.addEventListener("keyup", keyUpHandler);
 
 function App() {
     const gameState = useSelector(state => state.gameState);
     return (
         <div className="App">
+            <h1 className="title">
+                {gameState.isGameRunning ? "" : "Press space to begin"}
+            </h1>
             <Grid
                 rowCount={gameState.rowCount}
                 columnCount={gameState.columnCount}
