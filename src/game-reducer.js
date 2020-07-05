@@ -7,7 +7,10 @@ const defaultState = {
         body: [{ x: 10, y: 10 }, { x: 10, y: 11 }, { x: 10, y: 12 }]
     },
     frameRateInMs: 1000,
-    isGameRunning: false
+    isGameRunning: false,
+    // for score
+    score: 0,
+    statusText: "Press space to begin"
 };
 
 export function startGame() {
@@ -96,9 +99,7 @@ function growSnakeBody(lastFrameGameState, currentFrameGameState) {
 }
 
 function hasSnakeCrossedOverItself(snakeBody) {
-    console.log(snakeBody);
     const head = snakeBody[0];
-    // see if the snake head matches any of the other coordinates in the body
     const snakeBodyWithoutHead = snakeBody.slice(1);
     const snakeCheck = snakeBodyWithoutHead.some(coordinates => {
         return head.x === coordinates.x && coordinates.y === head.y;
@@ -129,7 +130,9 @@ function updateGameFrame(gameState) {
     if (isGameOver(newGameState)) {
         return {
             ...defaultState,
-            isGameRunning: false
+            statusText: "Press space to begin",
+            isGameRunning: false,
+            score: newGameState.score
         };
     }
 
@@ -141,6 +144,7 @@ function updateGameFrame(gameState) {
         console.log("Snake is on the target");
         return {
             ...newGameState,
+            score: newGameState.score + 1,
             snake: {
                 ...newGameState.snake,
                 body: growSnakeBody(gameState, newGameState)
@@ -171,7 +175,9 @@ export function gameStateReducer(state = defaultState, action) {
         case "START_GAME": {
             return {
                 ...state,
-                isGameRunning: true
+                statusText: "",
+                isGameRunning: true,
+                score: 0
             };
         }
         default: {

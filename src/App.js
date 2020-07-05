@@ -45,8 +45,9 @@ function App() {
     const gameState = useSelector(state => state.gameState);
     return (
         <div className="App">
-            <h1 className="title">
-                {gameState.isGameRunning ? "" : "Press space to begin"}
+            <h1 className="score">Score: {gameState.score}</h1>
+            <h1 className="title" style={{ height: "40px" }}>
+                {gameState.statusText}
             </h1>
             <Grid
                 rowCount={gameState.rowCount}

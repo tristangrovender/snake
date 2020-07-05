@@ -9,6 +9,10 @@
     background-color: #263445;
 }
 
+.App .score {
+    color: white;
+}
+
 .App .title {
     color: white;
 }
