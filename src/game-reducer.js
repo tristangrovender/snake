@@ -1,10 +1,10 @@
 const defaultState = {
     rowCount: 17,
     columnCount: 17,
-    targetCircle: { x: 3, y: 15 },
+    targetCircle: { x: 10, y: 9 },
     snake: {
         direction: "right",
-        body: [{ x: 10, y: 10 }, { x: 10, y: 11 }, { x: 10, y: 12 }]
+        body: [{ x: 2, y: 9 }, { x: 3, y: 9 }, { x: 4, y: 9 }]
     },
     frameRateInMs: 1000,
     isGameRunning: false,

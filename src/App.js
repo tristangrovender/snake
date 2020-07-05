@@ -12,7 +12,7 @@ setInterval(() => {
     if (gameState.isGameRunning === true) {
         dispatch(executeGameFrame());
     }
-}, 500);
+}, 150);
 
 const keyUpHandler = ({ key }) => {
     const { gameState } = getState();
